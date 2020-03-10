@@ -93,8 +93,11 @@ public class App {
         String halfItemsName = "";
         for (int i = 0; i < itemsIndex.length; i++) {
             if (Arrays.asList(halfPriceIds).contains(itemIds[itemsIndex[i]])) {
-                int indexOfItem = Arrays.binarySearch(itemIds, itemIds[itemsIndex[i]]);
-                halfItemsName += itemNames[indexOfItem] + "，";
+                if (itemsIndex.length - 1 == i) {
+                    halfItemsName += itemNames[i];
+                } else {
+                    halfItemsName += itemNames[i] + "，";
+                }
             }
         }
         return halfItemsName;
