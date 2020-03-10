@@ -110,6 +110,8 @@ public class App {
         String discountInfo = "";
         if (discountOne <= discountTwo) {
             if (originalPrice == discountOne) {
+                discountInfo = "";
+            } else {
                 discountInfo = "-----------------------------------\n"
                         + "使用优惠:\n"
                         + "满30减6元，省6元\n";
