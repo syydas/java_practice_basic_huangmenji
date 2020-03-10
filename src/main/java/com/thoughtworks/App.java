@@ -14,20 +14,23 @@ public class App {
     }
 
     public static String bestCharge(String selectedItems) {
-        int[] itemsIndex = getSelectedItemsIndex(selectedItems);
+        String[] itemIds = getItemIds();
+        String[] itemNames = getItemNames();
+        double[] itemPrices = getItemPrices();
+        String[] halfPriceIds = getHalfPriceIds();
+        int[] itemsIndex = getSelectedItemsIndex(selectedItems, itemIds);
         int[] itemsCount = getSelectedItemsCount(selectedItems);
-        selectedItems = printItemsInfo(itemsIndex, itemsCount);
-        double originalPrice = getOriginalPrices(itemsIndex, itemsCount);
+        selectedItems = printItemsInfo(itemsIndex, itemsCount, itemNames, itemPrices);
+        double originalPrice = getOriginalPrices(itemsIndex, itemsCount, itemPrices);
         double discountOne = getDiscountOnePrices(originalPrice);
-        double discountTwo = getDiscountTwoPrices(itemsIndex, itemsCount);
-        String halfItemsName = getHalfItemsName(itemsIndex);
+        double discountTwo = getDiscountTwoPrices(itemsIndex, itemsCount, itemIds, itemPrices, halfPriceIds);
+        String halfItemsName = getHalfItemsName(itemsIndex, itemIds, itemNames, halfPriceIds);
         selectedItems += printDiscountInfo(originalPrice, discountOne, discountTwo, halfItemsName);
         selectedItems += printTotalInfo(discountOne, discountTwo);
         return selectedItems;
     }
 
-    public static int[] getSelectedItemsIndex(String selectedItems) {
-        String[] itemIds = getItemIds();
+    public static int[] getSelectedItemsIndex(String selectedItems, String[] itemIds) {
         String[] selectedItem = selectedItems.split(",");
         int[] itemIndex = new int[selectedItem.length];
         int index = 0;
@@ -48,9 +51,7 @@ public class App {
         return itemCount;
     }
 
-    private static String printItemsInfo(int[] itemsIndex, int[] itemsCount) {
-        String[] itemNames = getItemNames();
-        double[] itemPrices = getItemPrices();
+    private static String printItemsInfo(int[] itemsIndex, int[] itemsCount, String[] itemNames, double[] itemPrices) {
         String itemsInfo = "============= 订餐明细 =============\n";
         for (int i = 0; i < itemsIndex.length; i++) {
             int totalPrices = 0;
@@ -61,8 +62,7 @@ public class App {
         return itemsInfo;
     }
 
-    private static double getOriginalPrices(int[] itemsIndex, int[] itemsCount) {
-        double[] itemPrices = getItemPrices();
+    private static double getOriginalPrices(int[] itemsIndex, int[] itemsCount, double[] itemPrices) {
         int originalPrice = 0;
         for (int i = 0; i < itemsIndex.length; i++) {
             originalPrice += itemsCount[i] * itemPrices[itemsIndex[i]];
@@ -77,10 +77,7 @@ public class App {
         return price;
     }
 
-    private static double getDiscountTwoPrices(int[] itemsIndex, int[] itemsCount) {
-        String[] itemIds = getItemIds();
-        double[] itemPrices = getItemPrices();
-        String[] halfPriceIds = getHalfPriceIds();
+    private static double getDiscountTwoPrices(int[] itemsIndex, int[] itemsCount, String[] itemIds, double[] itemPrices, String[] halfPriceIds) {
         int discountPrice = 0;
         for (int i = 0; i < itemsIndex.length; i++) {
             if (Arrays.asList(halfPriceIds).contains(itemIds[itemsIndex[i]])) {
@@ -92,10 +89,7 @@ public class App {
         return discountPrice;
     }
 
-    private static String getHalfItemsName(int[] itemsIndex) {
-        String[] itemIds = getItemIds();
-        String[] itemNames = getItemNames();
-        String[] halfPriceIds = getHalfPriceIds();
+    private static String getHalfItemsName(int[] itemsIndex, String[] itemIds, String[] itemNames, String[] halfPriceIds) {
         String halfItemsName = "";
         for (int i = 0; i < itemsIndex.length; i++) {
             if (Arrays.asList(halfPriceIds).contains(itemIds[itemsIndex[i]])) {
